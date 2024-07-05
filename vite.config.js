@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api/": "http://localhost:5000",
-      "/uploads/": "http://localhost:5000",
+      "/api/": "https://ecommercekue-backend-production.up.railway.app",
+      "/uploads/": "https://ecommercekue-backend-production.up.railway.app",
     }
   }
 })
