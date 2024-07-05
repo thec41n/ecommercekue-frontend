@@ -1,0 +1,19 @@
+.form-input-container {
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding-right: 50px; /* Beri ruang untuk tombol di dalam input */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  top: 73%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+}
