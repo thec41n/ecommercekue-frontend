@@ -6,8 +6,16 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api/": "https://ecommercekue-backend-production.up.railway.app",
-      "/uploads/": "https://ecommercekue-backend-production.up.railway.app",
+      "/api/": {
+        target: "https://ecommercekue-backend-production.up.railway.app",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/uploads/": {
+        target: "https://ecommercekue-backend-production.up.railway.app",
+        changeOrigin: true,
+        secure: false,
+      },
     }
   }
 })
