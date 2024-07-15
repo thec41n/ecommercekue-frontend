@@ -11,21 +11,22 @@ import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
 
 const ProductUpdate = () => {
-  const { id } = useParams();
+  const params = useParams();
+
+  const { data: productData } = useGetProductByIdQuery(params._id);
+  const [image, setImage] = useState(productData?.image || "");
+  const [name, setName] = useState(productData?.name || "");
+  const [description, setDescription] = useState(
+    productData?.description || ""
+  );
+  const [price, setPrice] = useState(productData?.price || "");
+  const [category, setCategory] = useState(productData?.category?._id || "");
+  const [quantity, setQuantity] = useState(productData?.quantity || "");
+  const [brand, setBrand] = useState(productData?.brand || "");
+  const [stock, setStock] = useState(productData?.countInStock);
+
   const navigate = useNavigate();
-
-  const { data: productData } = useGetProductByIdQuery(id);
-  const [image, setImage] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [brand, setBrand] = useState("");
-  const [stock, setStock] = useState("");
-  const [imageUrl, setImageUrl] = useState(null);
-
-  const { data: categories } = useFetchCategoriesQuery();
+  const { data: categories = [] } = useFetchCategoriesQuery();
   const [uploadProductImage] = useUploadProductImageMutation();
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
@@ -40,7 +41,6 @@ const ProductUpdate = () => {
       setBrand(productData.brand);
       setStock(productData.countInStock || 0);
       setImage(productData.image);
-      setImageUrl(productData.image);
     }
   }, [productData]);
 
@@ -60,8 +60,7 @@ const ProductUpdate = () => {
     try {
       const res = await uploadProductImage(formData).unwrap();
       toast.success(res.message);
-      setImage(res.url); // Set URL gambar dari respons
-      setImageUrl(res.url); // Tampilkan URL gambar dalam formulir
+      setImage(res.image);
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
@@ -71,7 +70,7 @@ const ProductUpdate = () => {
     e.preventDefault();
 
     if (
-      !imageUrl ||
+      !image ||
       !name ||
       !description ||
       !price ||
@@ -80,31 +79,32 @@ const ProductUpdate = () => {
       !brand ||
       !stock
     ) {
-      toast.error("Produk gagal diperbarui, coba lagi!.");
+      toast.error("Produk gagal ditambahkan, coba lagi!.");
       return;
     }
 
     try {
-      const productData = new FormData();
-      productData.append("image", imageUrl);
-      productData.append("name", name);
-      productData.append("description", description);
-      productData.append("price", price.replace(/\./g, ""));
-      productData.append("category", category);
-      productData.append("quantity", quantity);
-      productData.append("brand", brand);
-      productData.append("countInStock", stock);
+      const formData = new FormData();
+      formData.append("image", image);
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("price", price.replace(/\./g, ""));
+      formData.append("category", category);
+      formData.append("quantity", quantity);
+      formData.append("brand", brand);
+      formData.append("countInStock", stock);
 
-      const { data } = await updateProduct({ id, productData });
+      // Update product using the RTK Query mutation
+      const data = await updateProduct({ productId: params._id, formData });
 
       if (data.error) {
-        toast.error("Produk gagal diperbarui, coba lagi!.");
+        toast.error("Produk gagal ditambahkan, coba lagi!");
       } else {
-        toast.success(`${name} berhasil diperbarui!`);
+        toast.success(`${name} berhasil diupdate!`);
         navigate("/admin/allproductslist");
       }
     } catch (error) {
-      toast.error("Produk gagal diperbarui, coba lagi!.");
+      toast.error("Produk gagal diupdate, coba lagi!");
     }
   };
 
@@ -113,7 +113,7 @@ const ProductUpdate = () => {
       let answer = window.confirm("Apakah kamu yakin ingin menghapus?");
       if (!answer) return;
 
-      const { data } = await deleteProduct(id);
+      const { data } = await deleteProduct(params._id);
       console.log("Delete response data:", data);
       toast.success(`${name} berhasil dihapus`);
       navigate("/admin/allproductslist");
