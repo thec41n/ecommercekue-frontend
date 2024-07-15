@@ -36,7 +36,6 @@ const ProductList = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submit button clicked");
 
     try {
       const productData = new FormData();
@@ -49,11 +48,7 @@ const ProductList = () => {
       productData.append("brand", brand);
       productData.append("countInStock", stock);
 
-      console.log("Product Data:", productData);
-
       const { data } = await createProduct(productData);
-
-      console.log("Response Data:", data);
 
       if (data.error) {
         toast.error("Produk gagal ditambahkan, coba lagi!.");
