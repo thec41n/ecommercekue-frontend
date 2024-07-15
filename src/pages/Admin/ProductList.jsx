@@ -17,7 +17,7 @@ const ProductList = () => {
   const [quantity, setQuantity] = useState("");
   const [brand, setBrand] = useState("");
   const [stock, setStock] = useState("");
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState("");
   const navigate = useNavigate();
 
   const [uploadProductImage] = useUploadProductImageMutation();
@@ -39,7 +39,7 @@ const ProductList = () => {
 
     try {
       const productData = new FormData();
-      productData.append("image", image);
+      productData.append("image", imageUrl);
       productData.append("name", name);
       productData.append("description", description);
       productData.append("price", price.replace(/\./g, '')); // Remove dots for saving as number
@@ -68,8 +68,8 @@ const ProductList = () => {
     try {
       const res = await uploadProductImage(formData).unwrap();
       toast.success(res.message);
-      setImage(res.url); // Set URL gambar dari respons
-      setImageUrl(res.url); // Tampilkan URL gambar dalam formulir
+      setImage(res.url); // Set the image URL from the response
+      setImageUrl(res.url); // Set imageUrl state to use in the form
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
