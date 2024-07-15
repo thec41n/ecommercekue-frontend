@@ -14,7 +14,7 @@ const ProductUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: productData, isLoading, isError } = useGetProductByIdQuery(id);
+  const { data: productData } = useGetProductByIdQuery(id);
   const [image, setImage] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -123,25 +123,17 @@ const ProductUpdate = () => {
     }
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error loading product data</div>;
-  }
-
   return (
     <div className="container xl:mx-[9rem] sm:mx-[0]">
       <div className="flex flex-col md:flex-row">
         <AdminMenu />
         <div className="md:w-3/4 p-3">
-          <div className="h-12 font-bold">Update Produk</div>
+          <div className="h-12 font-bold">Tambahkan Produk</div>
 
-          {imageUrl && (
+          {image && (
             <div className="text-center">
               <img
-                src={imageUrl}
+                src={image}
                 alt="product"
                 className="block mx-auto max-h-[200px]"
               />
