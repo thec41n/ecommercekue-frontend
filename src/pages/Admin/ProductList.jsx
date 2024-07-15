@@ -17,7 +17,7 @@ const ProductList = () => {
   const [quantity, setQuantity] = useState("");
   const [brand, setBrand] = useState("");
   const [stock, setStock] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(null);
   const navigate = useNavigate();
 
   const [uploadProductImage] = useUploadProductImageMutation();
@@ -38,15 +38,16 @@ const ProductList = () => {
     e.preventDefault();
 
     try {
-      const productData = new FormData();
-      productData.append("image", imageUrl);
-      productData.append("name", name);
-      productData.append("description", description);
-      productData.append("price", price.replace(/\./g, '')); // Remove dots for saving as number
-      productData.append("category", category);
-      productData.append("quantity", quantity);
-      productData.append("brand", brand);
-      productData.append("countInStock", stock);
+      const productData = {
+        name,
+        description,
+        price: price.replace(/\./g, ''), // Remove dots for saving as number
+        category,
+        quantity,
+        brand,
+        countInStock: stock,
+        image: imageUrl, // Use the URL from imageUrl state
+      };
 
       const { data } = await createProduct(productData);
 
