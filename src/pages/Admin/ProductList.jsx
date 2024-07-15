@@ -39,16 +39,15 @@ const ProductList = () => {
     console.log("Submit button clicked");
 
     try {
-      const productData = {
-        name,
-        description,
-        price: price.replace(/\./g, ''), // Remove dots for saving as number
-        category,
-        quantity,
-        brand,
-        countInStock: stock,
-        image: imageUrl, // Use the URL from imageUrl state
-      };
+      const productData = new FormData();
+      productData.append("image", imageUrl); // Append the image URL
+      productData.append("name", name);
+      productData.append("description", description);
+      productData.append("price", price.replace(/\./g, '')); // Remove dots for saving as number
+      productData.append("category", category);
+      productData.append("quantity", quantity);
+      productData.append("brand", brand);
+      productData.append("countInStock", stock);
 
       console.log("Product Data:", productData);
 
