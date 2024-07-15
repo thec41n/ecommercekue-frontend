@@ -11,22 +11,21 @@ import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
 
 const ProductUpdate = () => {
-  const params = useParams();
-
-  const { data: productData } = useGetProductByIdQuery(params._id);
-  const [image, setImage] = useState(productData?.image || "");
-  const [name, setName] = useState(productData?.name || "");
-  const [description, setDescription] = useState(
-    productData?.description || ""
-  );
-  const [price, setPrice] = useState(productData?.price || "");
-  const [category, setCategory] = useState(productData?.category?._id || "");
-  const [quantity, setQuantity] = useState(productData?.quantity || "");
-  const [brand, setBrand] = useState(productData?.brand || "");
-  const [stock, setStock] = useState(productData?.countInStock);
-
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { data: categories = [] } = useFetchCategoriesQuery();
+
+  const { data: productData, isLoading, isError } = useGetProductByIdQuery(id);
+  const [image, setImage] = useState("");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [brand, setBrand] = useState("");
+  const [stock, setStock] = useState("");
+  const [imageUrl, setImageUrl] = useState(null);
+
+  const { data: categories } = useFetchCategoriesQuery();
   const [uploadProductImage] = useUploadProductImageMutation();
   const [updateProduct] = useUpdateProductMutation();
   const [deleteProduct] = useDeleteProductMutation();
@@ -41,6 +40,7 @@ const ProductUpdate = () => {
       setBrand(productData.brand);
       setStock(productData.countInStock || 0);
       setImage(productData.image);
+      setImageUrl(productData.image);
     }
   }, [productData]);
 
@@ -60,7 +60,8 @@ const ProductUpdate = () => {
     try {
       const res = await uploadProductImage(formData).unwrap();
       toast.success(res.message);
-      setImage(res.image);
+      setImage(res.url); // Set URL gambar dari respons
+      setImageUrl(res.url); // Tampilkan URL gambar dalam formulir
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
@@ -70,7 +71,7 @@ const ProductUpdate = () => {
     e.preventDefault();
 
     if (
-      !image ||
+      !imageUrl ||
       !name ||
       !description ||
       !price ||
@@ -79,32 +80,31 @@ const ProductUpdate = () => {
       !brand ||
       !stock
     ) {
-      toast.error("Produk gagal ditambahkan, coba lagi!.");
+      toast.error("Produk gagal diperbarui, coba lagi!.");
       return;
     }
 
     try {
-      const formData = new FormData();
-      formData.append("image", image);
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price.replace(/\./g, ""));
-      formData.append("category", category);
-      formData.append("quantity", quantity);
-      formData.append("brand", brand);
-      formData.append("countInStock", stock);
+      const productData = new FormData();
+      productData.append("image", imageUrl);
+      productData.append("name", name);
+      productData.append("description", description);
+      productData.append("price", price.replace(/\./g, ""));
+      productData.append("category", category);
+      productData.append("quantity", quantity);
+      productData.append("brand", brand);
+      productData.append("countInStock", stock);
 
-      // Update product using the RTK Query mutation
-      const data = await updateProduct({ productId: params._id, formData });
+      const { data } = await updateProduct({ id, productData });
 
       if (data.error) {
-        toast.error("Produk gagal ditambahkan, coba lagi!");
+        toast.error("Produk gagal diperbarui, coba lagi!.");
       } else {
-        toast.success(`${name} berhasil diupdate!`);
+        toast.success(`${name} berhasil diperbarui!`);
         navigate("/admin/allproductslist");
       }
     } catch (error) {
-      toast.error("Produk gagal diupdate, coba lagi!");
+      toast.error("Produk gagal diperbarui, coba lagi!.");
     }
   };
 
@@ -113,7 +113,7 @@ const ProductUpdate = () => {
       let answer = window.confirm("Apakah kamu yakin ingin menghapus?");
       if (!answer) return;
 
-      const { data } = await deleteProduct(params._id);
+      const { data } = await deleteProduct(id);
       console.log("Delete response data:", data);
       toast.success(`${name} berhasil dihapus`);
       navigate("/admin/allproductslist");
@@ -123,17 +123,25 @@ const ProductUpdate = () => {
     }
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading product data</div>;
+  }
+
   return (
     <div className="container xl:mx-[9rem] sm:mx-[0]">
       <div className="flex flex-col md:flex-row">
         <AdminMenu />
         <div className="md:w-3/4 p-3">
-          <div className="h-12 font-bold">Tambahkan Produk</div>
+          <div className="h-12 font-bold">Update Produk</div>
 
-          {image && (
+          {imageUrl && (
             <div className="text-center">
               <img
-                src={image}
+                src={imageUrl}
                 alt="product"
                 className="block mx-auto max-h-[200px]"
               />
