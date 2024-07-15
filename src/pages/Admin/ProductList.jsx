@@ -36,6 +36,7 @@ const ProductList = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Submit button clicked");
 
     try {
       const productData = {
@@ -49,7 +50,11 @@ const ProductList = () => {
         image: imageUrl, // Use the URL from imageUrl state
       };
 
+      console.log("Product Data:", productData);
+
       const { data } = await createProduct(productData);
+
+      console.log("Response Data:", data);
 
       if (data.error) {
         toast.error("Produk gagal ditambahkan, coba lagi!.");
@@ -58,6 +63,7 @@ const ProductList = () => {
         navigate("/");
       }
     } catch (error) {
+      console.error("Error:", error);
       toast.error("Produk gagal ditambahkan, coba lagi!.");
     }
   };
@@ -72,6 +78,7 @@ const ProductList = () => {
       setImage(res.url); // Set the image URL from the response
       setImageUrl(res.url); // Set imageUrl state to use in the form
     } catch (error) {
+      console.error("Upload Error:", error);
       toast.error(error?.data?.message || error.error);
     }
   };
