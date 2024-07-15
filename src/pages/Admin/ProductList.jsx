@@ -68,8 +68,8 @@ const ProductList = () => {
     try {
       const res = await uploadProductImage(formData).unwrap();
       toast.success(res.message);
-      setImage(res.image);
-      setImageUrl(res.image);
+      setImage(res.url); // Set URL gambar dari respons
+      setImageUrl(res.url); // Tampilkan URL gambar dalam formulir
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
