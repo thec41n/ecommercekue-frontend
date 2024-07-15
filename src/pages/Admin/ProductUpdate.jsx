@@ -24,6 +24,7 @@ const ProductUpdate = () => {
   const [quantity, setQuantity] = useState(productData?.quantity || "");
   const [brand, setBrand] = useState(productData?.brand || "");
   const [stock, setStock] = useState(productData?.countInStock);
+  const [imageUrl, setImageUrl] = useState(null);
 
   const navigate = useNavigate();
   const { data: categories = [] } = useFetchCategoriesQuery();
@@ -41,6 +42,7 @@ const ProductUpdate = () => {
       setBrand(productData.brand);
       setStock(productData.countInStock || 0);
       setImage(productData.image);
+      setImageUrl(productData.image);
     }
   }, [productData]);
 
@@ -60,7 +62,8 @@ const ProductUpdate = () => {
     try {
       const res = await uploadProductImage(formData).unwrap();
       toast.success(res.message);
-      setImage(res.image);
+      setImage(res.url); // Set URL gambar dari respons
+      setImageUrl(res.url); // Tampilkan URL gambar dalam formulir
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
@@ -85,7 +88,7 @@ const ProductUpdate = () => {
 
     try {
       const formData = new FormData();
-      formData.append("image", image);
+      formData.append("image", imageUrl);
       formData.append("name", name);
       formData.append("description", description);
       formData.append("price", price.replace(/\./g, ""));
@@ -130,10 +133,10 @@ const ProductUpdate = () => {
         <div className="md:w-3/4 p-3">
           <div className="h-12 font-bold">Tambahkan Produk</div>
 
-          {image && (
+          {imageUrl  && (
             <div className="text-center">
               <img
-                src={image}
+                src={imageUrl}
                 alt="product"
                 className="block mx-auto max-h-[200px]"
               />
