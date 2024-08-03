@@ -26,7 +26,12 @@ const Order = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   const handlePayment = () => {
-    if (order && !order.isPaid && order.paymentResult && order.paymentResult.token) {
+    if (
+      order &&
+      !order.isPaid &&
+      order.paymentResult &&
+      order.paymentResult.token
+    ) {
       window.snap.pay(order.paymentResult.token, {
         onSuccess: async (result) => {
           try {
@@ -38,16 +43,18 @@ const Order = () => {
             toast.error(error?.data?.message || error.message);
           }
         },
-        onPending: function(result) {
+        onPending: function (result) {
           console.log("Payment pending:", result);
         },
-        onError: function(result) {
+        onError: function (result) {
           console.log("Payment error:", result);
           toast.error("Pembayaran gagal");
         },
-        onClose: function() {
-          console.log("Customer closed the popup without finishing the payment");
-        }
+        onClose: function () {
+          console.log(
+            "Customer closed the popup without finishing the payment"
+          );
+        },
       });
     }
   };
@@ -68,7 +75,7 @@ const Order = () => {
       minute: "numeric",
       second: "numeric",
     });
-  }
+  };
 
   useEffect(() => {
     if (order && order.isPaid) {
@@ -87,7 +94,7 @@ const Order = () => {
             <thead>
               <tr>
                 <th className="p-2">Gambar</th>
-                <th className="p-2">Produk</th>
+                <th className="p-2 text-center">Produk</th>
                 <th className="p-2 text-center">Kuantitas</th>
                 <th className="p-2 text-center">Harga</th>
                 <th className="p-2 text-center">Total</th>
@@ -96,18 +103,21 @@ const Order = () => {
             <tbody>
               {order.orderItems.map((item, index) => (
                 <tr key={index}>
-                  <td className="p-2">
+                  <td className="p-2 text-center">
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="w-12 h-12 md:w-16 md:h-16 object-cover"
+                      className="w-16 h-16 object-cover mx-auto"
                     />
                   </td>
-                  <td className="p-2">
+                  <td className="p-2 text-center align-middle">
+                    {" "}
                     <Link to={`/product/${item.product}`}>{item.name}</Link>
                   </td>
                   <td className="p-2 text-center">{item.qty}</td>
-                  <td className="p-2 text-center">Rp {item.price.toLocaleString("id-ID")}</td>
+                  <td className="p-2 text-center">
+                    Rp {item.price.toLocaleString("id-ID")}
+                  </td>
                   <td className="p-2 text-center">
                     Rp {(item.qty * item.price).toLocaleString("id-ID")}
                   </td>
@@ -118,13 +128,27 @@ const Order = () => {
         </div>
         <div className="w-full md:w-1/3 bg-[#faa4a2] p-4 shadow-md rounded-lg space-y-4">
           <h2 className="text-xl font-bold">Pengiriman</h2>
-          <p><strong>Pesanan:</strong> {order._id}</p>
-          <p><strong>Nama:</strong> {order.user.username}</p>
-          <p><strong>Email:</strong> {order.user.email}</p>
-          <p><strong>Alamat:</strong> {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}, {order.shippingAddress.province}</p>
-          <p><strong>Metode Pembayaran:</strong> {order.paymentMethod}</p>
+          <p>
+            <strong>Pesanan:</strong> {order._id}
+          </p>
+          <p>
+            <strong>Nama:</strong> {order.user.username}
+          </p>
+          <p>
+            <strong>Email:</strong> {order.user.email}
+          </p>
+          <p>
+            <strong>Alamat:</strong> {order.shippingAddress.address},{" "}
+            {order.shippingAddress.city} {order.shippingAddress.postalCode},{" "}
+            {order.shippingAddress.province}
+          </p>
+          <p>
+            <strong>Metode Pembayaran:</strong> {order.paymentMethod}
+          </p>
           {order.isPaid ? (
-            <Message variant="success">Dibayarkan pada {formatDate(order.paidAt)}</Message>
+            <Message variant="success">
+              Dibayarkan pada {formatDate(order.paidAt)}
+            </Message>
           ) : (
             <Message variant="danger">Belum dibayar</Message>
           )}
@@ -155,15 +179,18 @@ const Order = () => {
             </button>
           )}
           {loadingDeliver && <Loader />}
-          {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
-            <button
-              type="button"
-              className="bg-orange-600 hover:bg-orange-700 text-white w-full py-2"
-              onClick={deliverHandler}
-            >
-              Tandai Sudah Diantar
-            </button>
-          )}
+          {userInfo &&
+            userInfo.isAdmin &&
+            order.isPaid &&
+            !order.isDelivered && (
+              <button
+                type="button"
+                className="bg-orange-600 hover:bg-orange-700 text-white w-full py-2"
+                onClick={deliverHandler}
+              >
+                Tandai Sudah Diantar
+              </button>
+            )}
         </div>
       </div>
     </div>
