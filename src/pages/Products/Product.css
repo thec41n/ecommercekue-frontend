@@ -1,0 +1,22 @@
+.product {
+  width: 100%;
+  max-width: 27rem;
+  margin: 0.5rem;
+}
+
+.product img {
+  width: 100%;
+  height: auto;
+  border-radius: 0.3rem;
+  transform: translateX(-10px);
+  -webkit-border-radius: 0.3rem;
+  -moz-border-radius: 0.3rem;
+  -ms-border-radius: 0.3rem;
+  -o-border-radius: 0.3rem;
+}
+
+@media (max-width: 768px) {
+  .product {
+    width: 100%;
+  }
+}

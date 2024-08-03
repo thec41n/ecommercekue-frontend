@@ -23,7 +23,7 @@ const Navigation = () => {
   const { cartItems } = useSelector((state) => state.cart);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -33,12 +33,8 @@ const Navigation = () => {
     setDropdownOpen(false);
   };
 
-  const toggleSidebar = () => {
-    setShowSidebar(!showSidebar);
-  };
-
-  const closeSidebar = () => {
-    setShowSidebar(false);
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   const dispatch = useDispatch();
@@ -69,200 +65,262 @@ const Navigation = () => {
   };
 
   return (
-    <div
-      style={{ zIndex: 999 }}
-      className={`${
-        showSidebar ? "hidden" : "flex"
-      } xl:flex lg:flex md:hidden sm:hidden flex-col justify-between p-4 text-white bg-[#000] w-[4%] hover:w-[15%] h-[100vh] fixed `}
-      id="navigation-container"
-    >
-      <div className="flex flex-col justify-center space-y-4">
-        <div className="flex justify-center items-center mt-4">
+    <div className="top-nav" id="navigation-container">
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center nav-left">
           <img src={logo} alt="Logo" className="w-12 h-12" />
-          <span className="hidden nav-item-name ml-2">KUE YANTI</span>
+          <span className="ml-2 text-xl font-bold">KUE YANTI</span>
         </div>
-        <Link
-          to="/"
-          className="flex items-center transition-transform transform hover:translate-x-2"
-        >
-          <AiOutlineHome className="mr-2 mt-[3rem]" size={26} />
-          <span className="hidden nav-item-name mt-[3rem]">HOME</span>{" "}
-        </Link>
-        <Link
-          to="/about"
-          className="flex items-center transition-transform transform hover:translate-x-2"
-        >
-          <IoIosInformationCircleOutline className="mr-2 mt-[3rem]" size={26} />
-          <span className="hidden nav-item-name mt-[3rem]">ABOUT US</span>
-        </Link>
-        <Link
-          to="/shop"
-          className="flex items-center transition-transform transform hover:translate-x-2"
-        >
-          <AiOutlineShopping className="mr-2 mt-[3rem]" size={26} />
-          <span className="hidden nav-item-name mt-[3rem]">SHOP</span>{" "}
-        </Link>
-        <Link to="/cart" className="flex relative">
-          <div className="flex items-center transition-transform transform hover:translate-x-2">
-            <AiOutlineShoppingCart className="mt-[3rem] mr-2" size={26} />
-            <span className="hidden nav-item-name mt-[3rem]">
-              KERANJANG
-            </span>{" "}
-          </div>
-          <div className="absolute top-9">
+        <div className="nav-links hidden md:flex">
+          <Link to="/" className="nav-link">
+            <AiOutlineHome size={26} />
+            <span>HOME</span>
+          </Link>
+          <Link to="/about" className="nav-link">
+            <IoIosInformationCircleOutline size={26} />
+            <span>ABOUT US</span>
+          </Link>
+          <Link to="/shop" className="nav-link">
+            <AiOutlineShopping size={26} />
+            <span>SHOP</span>
+          </Link>
+          <Link to="/cart" className="nav-link relative">
+            <AiOutlineShoppingCart size={26} />
+            <span>KERANJANG</span>
             {cartItems.length > 0 && (
-              <span>
-                <span className="px-1 py-0 text-sm text-white bg-orange-500 rounded-full">
-                  {cartItems.reduce((a, c) => a + Number(c.qty), 0)}
-                </span>
+              <span className="cart-count">
+                {cartItems.reduce((a, c) => a + Number(c.qty), 0)}
               </span>
             )}
-          </div>
-        </Link>
-        <Link to="/favorite" className="flex relative">
-          <div
-            className="flex items-center ml-1 transition-transform transform hover:translate-x-2"
-          >
-            <FaHeart className="mt-[3rem] mr-2" size={20} />
-            <span className="hidden nav-item-name mt-[3rem]">
-              FAVORITES
-            </span>{" "}
+          </Link>
+          <Link to="/favorite" className="nav-link relative">
+            <FaHeart size={20} />
+            <span>FAVORITES</span>
             <FavoritesCount />
-          </div>
-        </Link>
-      </div>
-
-      <div className="relative" onClick={dropdownClickHandler}>
-        <button
-          onClick={toggleDropdown}
-          className="flex items-center text-gray-8000 focus:outline-none"
-        >
-          {userInfo ? (
-            <span className="text-white">{userInfo.username}</span>
-          ) : (
-            <></>
+          </Link>
+        </div>
+        <div className="nav-auth-links hidden md:flex">
+          {!userInfo && (
+            <>
+              <Link to="/login" className="nav-link">
+                <AiOutlineLogin size={26} />
+                <span>LOGIN</span>
+              </Link>
+              <Link to="/register" className="nav-link">
+                <AiOutlineUserAdd size={26} />
+                <span>REGISTER</span>
+              </Link>
+            </>
           )}
-
           {userInfo && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className={`h-4 w-4 ml-1 ${
-                dropdownOpen ? "transform rotate-180" : ""
-              }`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="white"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d={dropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
-              />
-            </svg>
-          )}
-        </button>
-
-        {dropdownOpen && userInfo && (
-          <ul
-            className={`absolute right-0 mt-2 mr-14 space-y-2 bg-white text-gray-600 ${
-              !userInfo.isAdmin ? "-top-20" : "-top-80 -mt-11"
-            } `}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {userInfo.isAdmin && (
-              <>
-                <li>
-                  <Link
-                    to="/admin/dashboard"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/productlist"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Tambah Jajanan
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/allproductslist"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Daftar Jajanan
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/categorylist"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Kategori Makanan
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/orderlist"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Pesanan
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/userlist"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                  >
-                    Users
-                  </Link>
-                </li>
-              </>
-            )}
-            <li>
-              <Link to="/profile" className="block px-4 py-2 hover:bg-gray-100">
-                Profile
-              </Link>
-            </li>
-            <li>
-              <Link
-                onClick={logoutHandler}
-                className="block px-4 py-2 hover:bg-gray-100"
+            <div className="relative" onClick={dropdownClickHandler}>
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center text-white focus:outline-none"
               >
-                Logout
-              </Link>
-            </li>
-          </ul>
-        )}
+                <span>{userInfo.username}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-4 w-4 ml-1 ${
+                    dropdownOpen ? "transform rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d={
+                      dropdownOpen
+                        ? "M5 15l7-7 7 7"
+                        : "M19 9l-7 7-7-7"
+                    }
+                  />
+                </svg>
+              </button>
+              {dropdownOpen && (
+                <ul
+                  className={`dropdown-menu ${
+                    !userInfo.isAdmin
+                      ? "-top-0.1"
+                      : "-top-0.1"
+                  }`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {userInfo.isAdmin && (
+                    <>
+                      <li>
+                        <Link to="/admin/dashboard" className="flex w-full hover:bg-gray-100">Dashboard</Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/productlist" className="flex w-full hover:bg-gray-100">
+                          Tambah Jajanan
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/allproductslist" className="flex w-full hover:bg-gray-100">
+                          Daftar Jajanan
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/categorylist" className="flex w-full hover:bg-gray-100">
+                          Kategori Makanan
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/orderlist" className="flex w-full hover:bg-gray-100">Pesanan</Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/userlist" className="flex w-full hover:bg-gray-100">Users</Link>
+                      </li>
+                    </>
+                  )}
+                  <li>
+                    <Link to="/profile" className="flex w-full hover:bg-gray-100">Profile</Link>
+                  </li>
+                  <li>
+                    <Link onClick={logoutHandler} className="flex w-full hover:bg-gray-100">Logout</Link>
+                  </li>
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
+        <button className="md:hidden" onClick={toggleMenu}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
       </div>
-
-      {!userInfo && (
-        <ul>
-          <li>
-            <Link
-              to="/login"
-              className="flex items-center transition-transform transform hover:translate-x-2"
-            >
-              <AiOutlineLogin className="mr-2 mt-[3rem]" size={26} />
-              <span className="hidden nav-item-name mt-[3rem]">LOGIN</span>{" "}
-            </Link>
-          </li>
-
-          <li>
-            <Link
-              to="/register"
-              className="flex items-center transition-transform transform hover:translate-x-2"
-            >
-              <AiOutlineUserAdd className="mr-2 mt-[3rem]" size={26} />
-              <span className="hidden nav-item-name mt-[3rem]">
-                REGISTER
-              </span>{" "}
-            </Link>
-          </li>
-        </ul>
+      {menuOpen && (
+        <div className="md:hidden flex flex-col mt-2 space-y-2 nav-links">
+          <Link to="/" className="nav-link">
+            <AiOutlineHome size={26} />
+            <span>HOME</span>
+          </Link>
+          <Link to="/about" className="nav-link">
+            <IoIosInformationCircleOutline size={26} />
+            <span>ABOUT US</span>
+          </Link>
+          <Link to="/shop" className="nav-link">
+            <AiOutlineShopping size={26} />
+            <span>SHOP</span>
+          </Link>
+          <Link to="/cart" className="nav-link relative">
+            <AiOutlineShoppingCart size={26} />
+            <span>KERANJANG</span>
+            {cartItems.length > 0 && (
+              <span className="cart-count">
+                {cartItems.reduce((a, c) => a + Number(c.qty), 0)}
+              </span>
+            )}
+          </Link>
+          <Link to="/favorite" className="nav-link relative">
+            <FaHeart size={20} />
+            <span>FAVORITES</span>
+            <FavoritesCount />
+          </Link>
+          {!userInfo && (
+            <>
+              <Link to="/login" className="nav-link">
+                <AiOutlineLogin size={26} />
+                <span>LOGIN</span>
+              </Link>
+              <Link to="/register" className="nav-link">
+                <AiOutlineUserAdd size={26} />
+                <span>REGISTER</span>
+              </Link>
+            </>
+          )}
+          {userInfo && (
+            <div className="relative" onClick={dropdownClickHandler}>
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center text-white focus:outline-none"
+              >
+                <span>{userInfo.username}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-4 w-4 ml-1 ${
+                    dropdownOpen ? "transform rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="white"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d={
+                      dropdownOpen
+                        ? "M5 15l7-7 7 7"
+                        : "M19 9l-7 7-7-7"
+                    }
+                  />
+                </svg>
+              </button>
+              {dropdownOpen && (
+                <ul
+                  className={`dropdown-menu ${
+                    !userInfo.isAdmin
+                      ? "-top-20"
+                      : "-top-80 -mt-11"
+                  }`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {userInfo.isAdmin && (
+                    <>
+                      <li>
+                        <Link to="/admin/dashboard" className="flex w-full hover:bg-gray-100">Dashboard</Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/productlist" className="flex w-full hover:bg-gray-100">
+                          Tambah Jajanan
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/allproductslist" className="flex w-full hover:bg-gray-100">
+                          Daftar Jajanan
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/categorylist" className="flex w-full hover:bg-gray-100">
+                          Kategori Makanan
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/orderlist" className="flex w-full hover:bg-gray-100">Pesanan</Link>
+                      </li>
+                      <li>
+                        <Link to="/admin/userlist" className="flex w-full hover:bg-gray-100">Users</Link>
+                      </li>
+                    </>
+                  )}
+                  <li>
+                    <Link to="/profile" className="flex w-full hover:bg-gray-100">Profile</Link>
+                  </li>
+                  <li>
+                    <Link onClick={logoutHandler} className="flex w-full hover:bg-gray-100">Logout</Link>
+                  </li>
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

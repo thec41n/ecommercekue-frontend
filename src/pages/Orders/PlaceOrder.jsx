@@ -43,21 +43,23 @@ const PlaceOrder = () => {
 
   return (
     <>
-      <ProgressSteps step1 step2 step3 />
+      <div className="hidden md:block">
+        <ProgressSteps step1 step2 />
+      </div>
 
       <div className="container mx-auto mt-8">
         {cart.cartItems.length === 0 ? (
           <Message>Keranjangmu Kosong</Message>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
+            <table className="min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
-                  <td className="px-1 py-2 text-left align-top">Gambar</td>
-                  <td className="px-1 py-2 text-left">Produk</td>
-                  <td className="px-1 py-2 text-left">Kuantitas</td>
-                  <td className="px-1 py-2 text-left">Harga</td>
-                  <td className="px-1 py-2 text-left">Total</td>
+                  <td className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Gambar</td>
+                  <td className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Produk</td>
+                  <td className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Kuantitas</td>
+                  <td className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Harga</td>
+                  <td className="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider">Total</td>
                 </tr>
               </thead>
 
@@ -68,7 +70,7 @@ const PlaceOrder = () => {
                       <img
                         src={item.image}
                         alt={item.name}
-                        className="w-16 h-16 object-cover"
+                        className="w-16 h-16 object-cover object-center"
                       />
                     </td>
 
@@ -89,10 +91,10 @@ const PlaceOrder = () => {
           </div>
         )}
 
-        <div className="mt-8">
+        <div className="mt-8 px-4 py-2">
           <h2 className="text-2xl font-semibold mb-5">Rincian Pembelian</h2>
           <div className="flex justify-between rounded-xl flex-wrap p-8 bg-[#faa4a2]">
-            <ul className="text-lg">
+            <ul className="text-sm">
               <li>
                 <span className="font-semibold mb-4">Barang:</span> Rp{" "}
                 {cart.itemsPrice.toLocaleString("id-ID")}
@@ -114,8 +116,8 @@ const PlaceOrder = () => {
             {error && <Message variant="danger">{error.data.message}</Message>}
 
             <div>
-              <h2 className="text-2xl font-semibold mb-4">Pengiriman</h2>
-              <p>
+              <h2 className="mt-5 text-xl font-semibold mb-3">Pengiriman</h2>
+              <p className="text-sm">
                 <strong>Alamat:</strong> {cart.shippingAddress.address},{" "}
                 {cart.shippingAddress.city} {cart.shippingAddress.postalCode},{" "}
                 {cart.shippingAddress.province}
@@ -123,8 +125,8 @@ const PlaceOrder = () => {
             </div>
 
             <div>
-              <h2 className="text-2xl font-semibold mb-4">Metode Pembayaran</h2>
-              <strong>Method:</strong> {cart.paymentMethod}
+              <h2 className="mt-5 text-xl font-semibold mb-3">Metode Pembayaran</h2>
+              <strong className="text-sm">Method:</strong> {cart.paymentMethod}
             </div>
           </div>
 

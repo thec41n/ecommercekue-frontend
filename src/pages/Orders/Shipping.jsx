@@ -37,16 +37,21 @@ const Shipping = () => {
   }, [navigate, shippingAddress]);
 
   return (
-    <div className="container mx-auto mt-10">
-      <ProgressSteps step1 step2 />
-      <div className="mt-[10rem] flex justify-around items-center flex-wrap">
-        <form onSubmit={submitHandler} className="w-[40rem]">
+    <div className="container mx-auto -mt-3 px-4">
+      <div className="hidden md:block">
+        <ProgressSteps step1 step2 />
+      </div>
+      <div className="mt-4 flex flex-col items-center overflow-hidden">
+        <form
+          onSubmit={submitHandler}
+          className="w-full md:w-[40rem] px-4 md:px-0"
+        >
           <h1 className="text-2xl font-semibold mb-4">Form Pengiriman</h1>
           <div className="mb-4">
             <label className="block text-black mb-2">Alamat</label>
             <input
               type="text"
-              className="w-full p-2 border rounded"
+              className="w-full p-3 border rounded"
               placeholder="Masukkan alamat"
               value={address}
               required
@@ -105,7 +110,7 @@ const Shipping = () => {
           </div>
 
           <button
-            className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-full text-lg w-full"
+            className="bg-orange-600 hover:bg-orange-700 text-white py-3 px-5 rounded-full text-lg w-full mt-4"
             type="submit"
           >
             Continue

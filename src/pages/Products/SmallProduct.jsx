@@ -1,17 +1,19 @@
 import { Link } from "react-router-dom";
 import HeartIcon from "./HeartIcon";
 
-const SmallProduct = ({ product }) => {
-  const formattedPrice = product.price.toLocaleString('id-ID');
+const SmallProduct = ({ product, parentPage }) => {
+  const formattedPrice = product.price.toLocaleString("id-ID");
+
+  const containerStyle =
+    parentPage === "Home"
+      ? "w-full p-3 small-product"
+      : "p-3 md:w-1/3 lg:w-1/4";
+  const imageStyle = "h-auto rounded";
 
   return (
-    <div className="w-[20rem] ml-[2rem] p-3">
+    <div className={containerStyle}>
       <div className="relative">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="h-auto rounded"
-        />
+        <img src={product.image} alt={product.name} className={imageStyle} />
         <HeartIcon product={product} />
       </div>
 

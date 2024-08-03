@@ -59,7 +59,6 @@ const Order = () => {
 
   const formatDate = (date) => {
     if (!date) return "N/A";
-  
     return new Date(date).toLocaleString("id-ID", {
       weekday: "long",
       day: "2-digit",
@@ -77,113 +76,76 @@ const Order = () => {
     }
   }, [order?.isPaid, refetch]);
 
-  return isLoading ? (
-    <Loader />
-  ) : error ? (
-    <Message variant="danger">{error.data.message}</Message>
-  ) : (
-    <div className="container flex flex-col ml-[10rem] md:flex-row">
-      <div className="md:w-2/3 pr-4">
-        <div className="mt-5 pb-4 mb-5">
-          {order.orderItems.length === 0 ? (
-            <Message>Pesanan Kosong</Message>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-[80%]">
-                <thead>
-                  <tr>
-                    <th className="p-2">Gambar</th>
-                    <th className="p-2">Produk</th>
-                    <th className="p-2 text-center">Kuantitas</th>
-                    <th className="p-2">Harga</th>
-                    <th className="p-2">Total</th>
-                  </tr>
-                </thead>
+  if (isLoading) return <Loader />;
+  if (error) return <Message variant="danger">{error.data.message}</Message>;
 
-                <tbody>
-                  {order.orderItems.map((item, index) => (
-                    <tr key={index}>
-                      <td className="p-2 pl-20">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-16 h-16 object-cover"
-                        />
-                      </td>
-
-                      <td className="p-2 pl-20">
-                        <Link to={`/product/${item.product}`}>{item.name}</Link>
-                      </td>
-
-                      <td className="p-2 text-center">{item.qty}</td>
-                      <td className="p-2 text-center">Rp {item.price.toLocaleString("id-ID")}</td>
-                      <td className="p-2 text-center">
-                        Rp {(item.qty * item.price).toLocaleString("id-ID")}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+  return (
+    <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col md:flex-row gap-5">
+        <div className="flex-1 overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <th className="p-2">Gambar</th>
+                <th className="p-2">Produk</th>
+                <th className="p-2 text-center">Kuantitas</th>
+                <th className="p-2 text-center">Harga</th>
+                <th className="p-2 text-center">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {order.orderItems.map((item, index) => (
+                <tr key={index}>
+                  <td className="p-2">
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      className="w-12 h-12 md:w-16 md:h-16 object-cover"
+                    />
+                  </td>
+                  <td className="p-2">
+                    <Link to={`/product/${item.product}`}>{item.name}</Link>
+                  </td>
+                  <td className="p-2 text-center">{item.qty}</td>
+                  <td className="p-2 text-center">Rp {item.price.toLocaleString("id-ID")}</td>
+                  <td className="p-2 text-center">
+                    Rp {(item.qty * item.price).toLocaleString("id-ID")}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </div>
-
-      <div className="md:w-1/3">
-        <div className="mt-5 border-gray-300 pb-4 mb-4">
-          <h2 className="text-xl font-bold mb-2">Pengiriman</h2>
-          <p className="mb-4 mt-4">
-            <strong className="text-black-500">Pesanan:</strong> {order._id}
-          </p>
-
-          <p className="mb-4">
-            <strong className="text-black-500">Nama:</strong>{" "}
-            {order.user.username}
-          </p>
-
-          <p className="mb-4">
-            <strong className="text-black-500">Email:</strong>{" "}
-            {order.user.email}
-          </p>
-
-          <p className="mb-4">
-            <strong className="text-black-500">Alamat:</strong>{" "}
-            {order.shippingAddress.address}, {order.shippingAddress.city}{" "}
-            {order.shippingAddress.postalCode}, {order.shippingAddress.province}
-          </p>
-
-          <p className="mb-4">
-            <strong className="text-black-500">Metode Pembayaran:</strong>{" "}
-            {order.paymentMethod}
-          </p>
-
+        <div className="w-full md:w-1/3 bg-[#faa4a2] p-4 shadow-md rounded-lg space-y-4">
+          <h2 className="text-xl font-bold">Pengiriman</h2>
+          <p><strong>Pesanan:</strong> {order._id}</p>
+          <p><strong>Nama:</strong> {order.user.username}</p>
+          <p><strong>Email:</strong> {order.user.email}</p>
+          <p><strong>Alamat:</strong> {order.shippingAddress.address}, {order.shippingAddress.city} {order.shippingAddress.postalCode}, {order.shippingAddress.province}</p>
+          <p><strong>Metode Pembayaran:</strong> {order.paymentMethod}</p>
           {order.isPaid ? (
             <Message variant="success">Dibayarkan pada {formatDate(order.paidAt)}</Message>
           ) : (
             <Message variant="danger">Belum dibayar</Message>
           )}
-        </div>
-
-        <h2 className="text-xl font-bold mb-2 mt-[3rem]">Rincian Pembelian</h2>
-        <div className="flex justify-between mb-2">
-          <span>Barang</span>
-          <span>Rp {order.itemsPrice.toLocaleString("id-ID")}</span>
-        </div>
-        <div className="flex justify-between mb-2">
-          <span>Ongkos Kirim</span>
-          <span>Rp {order.shippingPrice.toLocaleString("id-ID")}</span>
-        </div>
-        <div className="flex justify-between mb-2">
-          <span>Tax</span>
-          <span>Rp {order.taxPrice.toLocaleString("id-ID")}</span>
-        </div>
-        <div className="flex justify-between mb-2">
-          <span>Total</span>
-          <span>Rp {order.totalPrice.toLocaleString("id-ID")}</span>
-        </div>
-
-        {!order.isPaid && (
-          <div>
+          <h2 className="text-xl font-bold mt-4">Rincian Pembelian</h2>
+          <div className="flex justify-between">
+            <span>Barang</span>
+            <span>Rp {order.itemsPrice.toLocaleString("id-ID")}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Ongkos Kirim</span>
+            <span>Rp {order.shippingPrice.toLocaleString("id-ID")}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Tax</span>
+            <span>Rp {order.taxPrice.toLocaleString("id-ID")}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Total</span>
+            <span>Rp {order.totalPrice.toLocaleString("id-ID")}</span>
+          </div>
+          {!order.isPaid && (
             <button
               type="button"
               className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-full text-lg w-full mt-4"
@@ -191,12 +153,9 @@ const Order = () => {
             >
               Checkout
             </button>
-          </div>
-        )}
-
-        {loadingDeliver && <Loader />}
-        {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
-          <div>
+          )}
+          {loadingDeliver && <Loader />}
+          {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
             <button
               type="button"
               className="bg-orange-600 hover:bg-orange-700 text-white w-full py-2"
@@ -204,8 +163,8 @@ const Order = () => {
             >
               Tandai Sudah Diantar
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

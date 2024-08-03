@@ -6,7 +6,7 @@ import Loader from "../../components/Loader";
 import { useProfileMutation } from "../../redux/api/usersApiSlice";
 import { setCredentials } from "../../redux/features/auth/authSlice";
 import { Link } from "react-router-dom";
-import '../App.css';
+import "../App.css";
 
 const Profile = () => {
   const [username, setUserName] = useState("");
@@ -49,13 +49,13 @@ const Profile = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 mt-[10rem]">
-      <div className="flex justify-center align-center md:flex md:space-x-4">
-        <div className="md:w-1/3">
-          <h2 className="text-2xl font-semibold mb-4">Update Profile</h2>
-          <form onSubmit={submitHandler}>
-            <div className="mb-4">
-              <label className="block text-black mb-2">Name</label>
+    <div className="container mx-auto p-4 mt-10 max-h-screen overflow-y-auto">
+      <div className="flex flex-col md:flex-row items-start justify-center md:space-x-4">
+        <div className="w-full md:w-1/2 lg:w-1/3 p-2">
+          <h2 className="text-2xl font-semibold mb-4">Update Profil</h2>
+          <form onSubmit={submitHandler} className="space-y-4">
+            <div>
+              <label className="block text-black mb-1">Nama</label>
               <input
                 type="text"
                 placeholder="Masukkan username"
@@ -65,8 +65,8 @@ const Profile = () => {
               />
             </div>
 
-            <div className="mb-4">
-              <label className="block text-black mb-2">Email Address</label>
+            <div>
+              <label className="block text-black mb-1">Alamat Email</label>
               <input
                 type="email"
                 placeholder="Masukkan email"
@@ -76,50 +76,51 @@ const Profile = () => {
               />
             </div>
 
-            <div className="mb-4 relative">
-              <label className="block text-black mb-2">Password</label>
+            <div className="relative">
+              <label className="block text-black mb-1">Kata Sandi</label>
               <input
                 type={showPassword ? "text" : "password"}
-                placeholder="Masukkan password"
+                placeholder="Masukkan kata sandi"
                 className="form-input mt-1 p-2 border rounded w-full"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <button
                 type="button"
-                className="toggle-password"
+                className="absolute inset-y-0 top-7 right-0 px-3 flex items-center text-sm"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? "Sembunyikan" : "Tampilkan"}
               </button>
             </div>
 
-            <div className="mb-4 form-input-container">
-              <label className="block text-black mb-2">Confirm Password</label>
+            <div className="relative">
+              <label className="block text-black mb-1">
+                Konfirmasi Kata Sandi
+              </label>
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                placeholder="Konfirmasi password"
-                className="form-input mt-1 p-2 border rounded"
+                placeholder="Konfirmasi kata sandi"
+                className="form-input mt-1 p-2 border rounded w-full"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <button
                 type="button"
-                className="toggle-password"
+                className="absolute inset-y-0 top-7 right-0 px-3 flex items-center text-sm"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ? "Hide" : "Show"}
+                {showConfirmPassword ? "Sembunyikan" : "Tampilkan"}
               </button>
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between space-x-4">
               <button
                 type="submit"
                 className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded"
               >
-                Update
+                Perbarui
               </button>
-
               <Link
                 to="/user-orders"
                 className="bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded"
@@ -127,8 +128,8 @@ const Profile = () => {
                 Pesanan Saya
               </Link>
             </div>
-            {loadingUpdateProfile && <Loader />}
           </form>
+          {loadingUpdateProfile && <Loader />}
         </div>
       </div>
     </div>
