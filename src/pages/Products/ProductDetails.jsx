@@ -38,7 +38,8 @@ const ProductDetails = () => {
     error,
   } = useGetProductDetailsQuery(productId);
 
-  const { data: topProducts, isLoading: isLoadingTopProducts } = useGetTopProductsQuery();
+  const { data: topProducts, isLoading: isLoadingTopProducts } =
+    useGetTopProductsQuery();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -85,7 +86,10 @@ const ProductDetails = () => {
   return (
     <>
       <div className="text-center sm:text-left mb-4">
-        <Link to="/" className="text-black font-semibold hover:underline ml-4 md:ml-[2.5rem]">
+        <Link
+          to="/"
+          className="text-black font-semibold hover:underline ml-4 md:ml-[2.5rem]"
+        >
           Kembali
         </Link>
       </div>
@@ -93,23 +97,31 @@ const ProductDetails = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{error?.data?.message || error.message}</Message>
+        <Message variant="danger">
+          {error?.data?.message || error.message}
+        </Message>
       ) : (
         <div className="mx-4 md:mx-10 mt-4">
           <div className="flex flex-col md:flex-row items-start justify-between mb-8">
-            <div className="w-full md:w-1/2 lg:w-1/3 mb-4 md:mb-0">
+            <div className="w-full md:w-1/2 lg:w-1/3 mb-4 md:mb-0 relative">
               <img
                 src={product.image}
                 alt={product.name}
                 className="w-full h-auto"
               />
-              <HeartIcon product={product} />
+              <div className="absolute top-0 right-0 mr-2 mt-2">
+                <HeartIcon product={product} />
+              </div>
             </div>
 
             <div className="flex flex-col w-full md:w-1/2 lg:w-2/3 mt-4 md:mt-0 px-4 md:px-10">
-              <h2 className="text-2xl font-semibold text-center md:text-left">{product.name}</h2>
+              <h2 className="text-2xl font-semibold text-center md:text-left">
+                {product.name}
+              </h2>
               <p className="my-2 text-justify">{product.description}</p>
-              <p className="text-3xl font-bold mb-4">Rp {product.price.toLocaleString("id-ID")}</p>
+              <p className="text-3xl font-bold mb-4">
+                Rp {product.price.toLocaleString("id-ID")}
+              </p>
 
               <div className="flex flex-col md:flex-row justify-between mb-4">
                 <div>
@@ -117,7 +129,8 @@ const ProductDetails = () => {
                     <FaStore className="mr-2" /> Merk: {product.brand}
                   </h1>
                   <h1 className="flex items-center mb-2">
-                    <FaClock className="mr-2" /> Ditambahkan pada: {formatDate(product.createdAt)}
+                    <FaClock className="mr-2" /> Ditambahkan pada:{" "}
+                    {formatDate(product.createdAt)}
                   </h1>
                   <h1 className="flex items-center">
                     <FaStar className="mr-2" /> Ulasan: {product.numReviews}
@@ -125,18 +138,24 @@ const ProductDetails = () => {
                 </div>
                 <div>
                   <h1 className="flex items-center mb-2">
-                    <FaStar className="mr-2" /> Rating: {Math.round(product.rating)}
+                    <FaStar className="mr-2" /> Rating:{" "}
+                    {Math.round(product.rating)}
                   </h1>
                   <h1 className="flex items-center">
-                    <FaShoppingCart className="mr-2" /> Kuantitas: {product.quantity}
+                    <FaShoppingCart className="mr-2" /> Kuantitas:{" "}
+                    {product.quantity}
                   </h1>
                   <h1 className="flex items-center">
-                    <FaBox className="mr-2" /> Jumlah Stok: {product.countInStock}
+                    <FaBox className="mr-2" /> Jumlah Stok:{" "}
+                    {product.countInStock}
                   </h1>
                 </div>
               </div>
 
-              <Ratings value={product.rating} text={`${product.numReviews} ulasan`} />
+              <Ratings
+                value={product.rating}
+                text={`${product.numReviews} ulasan`}
+              />
 
               {product.countInStock > 0 && (
                 <select
@@ -191,8 +210,8 @@ const ProductDetails = () => {
             </section>
 
             <section className="w-full md:w-3/4 p-4">
-              {activeTab === 1 && (
-                userInfo ? (
+              {activeTab === 1 &&
+                (userInfo ? (
                   <form onSubmit={submitHandler}>
                     <label htmlFor="rating" className="block text-xl mb-2">
                       Rating
@@ -212,7 +231,10 @@ const ProductDetails = () => {
                       <option value="5">Sempurna</option>
                     </select>
 
-                    <label htmlFor="comment" className="block text-xl mb-2 mt-4">
+                    <label
+                      htmlFor="comment"
+                      className="block text-xl mb-2 mt-4"
+                    >
                       Komentar
                     </label>
                     <textarea
@@ -233,10 +255,10 @@ const ProductDetails = () => {
                   </form>
                 ) : (
                   <Message variant="info">
-                    Silahkan <Link to="/login">log in</Link> untuk menulis ulasan.
+                    Silahkan <Link to="/login">log in</Link> untuk menulis
+                    ulasan.
                   </Message>
-                )
-              )}
+                ))}
 
               {activeTab === 2 && (
                 <section>
@@ -266,7 +288,11 @@ const ProductDetails = () => {
                     <Loader />
                   ) : (
                     topProducts.map((product) => (
-                      <SmallProduct key={product._id} product={product} parentPage="ProductDetail" />
+                      <SmallProduct
+                        key={product._id}
+                        product={product}
+                        parentPage="ProductDetail"
+                      />
                     ))
                   )}
                 </section>
