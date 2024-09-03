@@ -4,12 +4,14 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 import { toast } from "react-toastify";
 import HeartIcon from "./HeartIcon";
+import { useState } from "react";
 
 const ProductCard = ({ p }) => {
   const dispatch = useDispatch();
+  const [qty, setQty] = useState(1);
 
-  const addToCartHandler = (product, qty) => {
-    dispatch(addToCart({ ...product, qty }));
+  const addToCartHandler = () => {
+    dispatch(addToCart({ ...p, qty }));
     toast.success("Barang berhasil ditambahkan ke keranjang");
   };
 
@@ -51,9 +53,23 @@ const ProductCard = ({ p }) => {
             Read More
           </Link>
 
+          {p.countInStock > 0 && (
+            <select
+              value={qty}
+              onChange={(e) => setQty(Number(e.target.value))}
+              className="form-select p-2 rounded-lg text-black"
+            >
+              {[...Array(p.countInStock).keys()].map((x) => (
+                <option key={x + 1} value={x + 1}>
+                  {x + 1}
+                </option>
+              ))}
+            </select>
+          )}
+
           <button
             className="p-2 rounded-full text-black"
-            onClick={() => addToCartHandler(p, 1)}
+            onClick={addToCartHandler}
           >
             <AiOutlineShoppingCart size={25} />
           </button>
